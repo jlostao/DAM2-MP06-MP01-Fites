@@ -1,8 +1,14 @@
 package cat.iesesteveterradas.fites;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import javax.xml.crypto.dsig.TransformException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -14,9 +20,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Amb Java, crea un arxiu XML "Exercici4.xml" amb l'estructura especificada.
@@ -60,6 +69,40 @@ public class Exercici4 {
         llista.add(new String[] {"Dart", "2011", ".dart", "mitjana"});
 
         // Genera l'estructura XML a partir de les dades proporcionades
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db;
+            db = dbf.newDocumentBuilder();
+            
+            Document doc = db.newDocument();
+            Element elmRoot = doc.createElement("llista");
+            doc.appendChild(elmRoot);
+            for (String[] lang : llista) {
+                Element language = doc.createElement("llenguatge");
+                Attr attrDiff = doc.createAttribute("dificultat");
+                Attr attrExt = doc.createAttribute("extensio");
+                attrDiff.setValue((String) Array.get(lang, 3));
+                attrExt.setValue((String) Array.get(lang, 2));
+                language.setAttributeNode(attrDiff);
+                language.setAttributeNode(attrExt);
+
+                Element elmNom = doc.createElement("nom");
+                Text nodeNomText = doc.createTextNode((String) Array.get(lang, 0));
+                elmNom.appendChild(nodeNomText);
+                language.appendChild(elmNom);
+
+                Element elmAny = doc.createElement("any");
+                Text nodeAnyText = doc.createTextNode((String) Array.get(lang, 1));
+                elmAny.appendChild(nodeAnyText);
+                language.appendChild(elmAny);
+
+                elmRoot.appendChild(language);
+            }
+
+            write(filePath, doc);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
 
         // Guarda l'estructura generada a l'arxiu 'filePath'
     }

@@ -3,6 +3,7 @@ package cat.iesesteveterradas.fites;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 /**
@@ -31,8 +32,14 @@ public class Exercici1 {
             File file = new File(filePathIn);
             Scanner scnr = new Scanner(file);
 
+            PrintWriter pw = new PrintWriter(filePathOut);
+            pw.close();
             // Bucle que llegeix línia a línia 'filePathIn'
             // i escriu línia a línia 'filePathOut' amb el text girat
+            while (scnr.hasNextLine()) {
+                String invertedline = giraText(scnr.nextLine());
+                fOut.append(invertedline + "\n");
+            }
 
             scnr.close();
             fOut.close();
